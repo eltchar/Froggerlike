@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1905217265631165380}
   - component: {fileID: 4001765197474935722}
   - component: {fileID: 191119279648965280}
+  - component: {fileID: 8739954711156837506}
   m_Layer: 11
   m_Name: LeafPad
   m_TagString: Untagged
@@ -98,7 +99,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.030000001, y: -0.03}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -109,7 +110,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.6875031, y: 0.6900976}
   m_EdgeRadius: 0
 --- !u!50 &4001765197474935722
 Rigidbody2D:
@@ -142,5 +143,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 79801f9ba7615134189cc8fc458df144, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isSunken: 0
+  entityType: 0
+  isSinkingType: 0
+--- !u!114 &8739954711156837506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905217265631165383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b018e34f746a576479f0eae73b7b1c4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

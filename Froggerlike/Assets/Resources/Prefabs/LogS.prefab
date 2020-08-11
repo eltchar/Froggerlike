@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4890947251138496318}
   - component: {fileID: 3977855353840870801}
   - component: {fileID: 2820413892341931472}
+  - component: {fileID: -6865897277978733363}
   m_Layer: 11
   m_Name: LogS
   m_TagString: Untagged
@@ -60,7 +61,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3, y: 1}
+  m_Size: {x: 2.75, y: 1}
   m_EdgeRadius: 0
 --- !u!50 &3977855353840870801
 Rigidbody2D:
@@ -96,7 +97,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityType: 0
-  isSinking: 0
+  isSinkingType: 0
+--- !u!114 &-6865897277978733363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5656964478633013527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b018e34f746a576479f0eae73b7b1c4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6765027921461089066
 GameObject:
   m_ObjectHideFlags: 0

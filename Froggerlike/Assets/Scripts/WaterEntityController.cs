@@ -7,20 +7,20 @@ public class WaterEntityController : MonoBehaviour
 {
     //base variables
     private float moveSpeed;
-    private Vector3 movePoint;
-    private bool entityDirection;
+    private int entityDirection;
     private float sinkingTime = 5f;
-    private bool isSunken=false;
+    public bool isSunken=false;
     [SerializeField] private int entityType = 0;
     [SerializeField] private bool isSinkingType=false;
+    Rigidbody2D entityRb;
 
     private void Start()
     {
+        entityRb = GetComponent<Rigidbody2D>();
         SetEntityType(entityType);
     }
     private void Update()
     {
-        transform.position = Vector3.MoveTowards(transform.position, movePoint, moveSpeed * Time.deltaTime);
         if (isSinkingType)
         {
             if (sinkingTime > 0f)
@@ -49,29 +49,29 @@ public class WaterEntityController : MonoBehaviour
         switch (Type)
         {
             case 1:
-                entityDirection = true;
+                entityDirection = 1;
                 moveSpeed = 2f * GameManagerScript.instance.difficultyFactor;
-                movePoint = new Vector3(20f, transform.position.y, transform.position.z);
+                entityRb.velocity = new Vector2(moveSpeed * entityDirection, 0f);
                 break;
             case 2:
-                entityDirection = false;
+                entityDirection = -1;
                 moveSpeed = 3f * GameManagerScript.instance.difficultyFactor;
-                movePoint = new Vector3(-20f, transform.position.y, transform.position.z);
+                entityRb.velocity = new Vector2(moveSpeed * entityDirection, 0f);
                 break;
             case 3:
-                entityDirection = false;
+                entityDirection = -1;
                 moveSpeed = 1.5f * GameManagerScript.instance.difficultyFactor;
-                movePoint = new Vector3(-20f, transform.position.y, transform.position.z);
+                entityRb.velocity = new Vector2(moveSpeed * entityDirection, 0f);
                 break;
             case 4:
-                entityDirection = true;
+                entityDirection = 1;
                 moveSpeed = 2f * GameManagerScript.instance.difficultyFactor;
-                movePoint = new Vector3(20f, transform.position.y, transform.position.z);
+                entityRb.velocity = new Vector2(moveSpeed * entityDirection, 0f);
                 break;
             case 5:
-                entityDirection = false;
+                entityDirection = -1;
                 moveSpeed = 1.5f * GameManagerScript.instance.difficultyFactor;
-                movePoint = new Vector3(-20f, transform.position.y, transform.position.z);
+                entityRb.velocity = new Vector2(moveSpeed * entityDirection, 0f);
                 break;
             default:
                 break;
@@ -93,7 +93,7 @@ public class WaterEntityController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (entityDirection)
+        if (entityDirection==1)
         {
             if (collision.name == "GameBoundaryRight")
             {
@@ -110,23 +110,12 @@ public class WaterEntityController : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.name=="Player")
-        {
-            if (isSunken)
-            {
-                GameManagerScript.instance.DeathEvent(this, EventArgs.Empty);
-            }
-        }
-    }
-
     public float GetSpeed()
     {
         return moveSpeed;
     }
 
-    public bool GetDirection()
+    public int GetDirection()
     {
         return entityDirection;
     }

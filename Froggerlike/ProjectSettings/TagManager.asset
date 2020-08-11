@@ -18,8 +18,8 @@ TagManager:
   - WaterTile
   - WaterEntites
   - GroundEntities
-  - 
-  - 
+  - Player
+  - WinZone
   - 
   - 
   - 
