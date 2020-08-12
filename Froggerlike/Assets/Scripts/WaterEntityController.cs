@@ -73,7 +73,7 @@ public class WaterEntityController : MonoBehaviour
                 break;
             case 3:
                 entityDirection = -1;
-                moveSpeed = 1.5f * GameManagerScript.instance.difficultyFactor;
+                moveSpeed = 1f * GameManagerScript.instance.difficultyFactor;
                 entityRb.velocity = new Vector2(moveSpeed * entityDirection, 0f);
                 break;
             case 4:

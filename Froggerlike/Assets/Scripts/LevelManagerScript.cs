@@ -9,6 +9,7 @@ public class LevelManagerScript : MonoBehaviour
 {
     //ui elements
     private Image[] livesImage = new Image[3];
+    private Image[] SuccessImage = new Image[3];
     private TextMeshProUGUI timeCounterText;
     private TextMeshProUGUI scoreCounterText;
     private GameObject pauseMenu;
@@ -29,6 +30,10 @@ public class LevelManagerScript : MonoBehaviour
         livesImage[1] = GameObject.Find("LivesIcon2").GetComponent<Image>();
         livesImage[2] = GameObject.Find("LivesIcon3").GetComponent<Image>();
         UpdateLives();
+        SuccessImage[0] = GameObject.Find("FrogIcon1").GetComponent<Image>();
+        SuccessImage[1] = GameObject.Find("FrogIcon2").GetComponent<Image>();
+        SuccessImage[2] = GameObject.Find("FrogIcon3").GetComponent<Image>();
+        UpdateSuccess();
         timeCounterText = GameObject.Find("TimeTextCount").GetComponent<TextMeshProUGUI>();
         UpdateTime();
         scoreCounterText = GameObject.Find("ScoreTextCount").GetComponent<TextMeshProUGUI>();
@@ -98,6 +103,7 @@ public class LevelManagerScript : MonoBehaviour
         if (GameManagerScript.instance.successCount < 2)
         {
             GameManagerScript.instance.successCount += 1;
+            UpdateSuccess();
             GameManagerScript.instance.score += Mathf.RoundToInt(GameManagerScript.instance.roundTime*GameManagerScript.instance.difficultyFactor);
             GameManagerScript.instance.roundTime = 30f;
             UpdateTime();
@@ -106,6 +112,8 @@ public class LevelManagerScript : MonoBehaviour
         }
         else
         {
+            GameManagerScript.instance.successCount += 1;
+            UpdateSuccess();
             AudioManager.instance.Play("VictorySFX");
             Time.timeScale = 0f;
             victoryWidget.SetActive(true);
@@ -123,14 +131,14 @@ public class LevelManagerScript : MonoBehaviour
         scoreCounterText.text = GameManagerScript.instance.score.ToString();
     }
 
-    private void UnpauseGame()
+    public void UnpauseGame()
     {
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
         isGamePaused = false;
         AudioManager.instance.Play("MainThemeBGM");
     }
-    private void PauseGame()
+    public void PauseGame()
     {
         pauseMenu.SetActive(true);
         Time.timeScale = 0f;
@@ -146,6 +154,10 @@ public class LevelManagerScript : MonoBehaviour
             isGamePaused = false;
         }
         GameManagerScript.instance.MoveToMainMenu();
+    }
+    public void ReturnToLevel1()
+    {
+        GameManagerScript.instance.MoveToLevel1();
     }
     public void MoveToLevel2()
     {
@@ -188,6 +200,35 @@ public class LevelManagerScript : MonoBehaviour
                 livesImage[2].gameObject.SetActive(false);
                 livesImage[1].gameObject.SetActive(false);
                 livesImage[0].gameObject.SetActive(false);
+                break;
+
+            default:
+                break;
+        }
+    }
+    private void UpdateSuccess()
+    {
+        switch (GameManagerScript.instance.successCount)
+        {
+            case 3:
+                SuccessImage[2].gameObject.SetActive(true);
+                SuccessImage[1].gameObject.SetActive(true);
+                SuccessImage[0].gameObject.SetActive(true);
+                break;
+            case 2:
+                SuccessImage[2].gameObject.SetActive(false);
+                SuccessImage[1].gameObject.SetActive(true);
+                SuccessImage[0].gameObject.SetActive(true);
+                break;
+            case 1:
+                SuccessImage[2].gameObject.SetActive(false);
+                SuccessImage[1].gameObject.SetActive(false);
+                SuccessImage[0].gameObject.SetActive(true);
+                break;
+            case 0:
+                SuccessImage[2].gameObject.SetActive(false);
+                SuccessImage[1].gameObject.SetActive(false);
+                SuccessImage[0].gameObject.SetActive(false);
                 break;
 
             default:
