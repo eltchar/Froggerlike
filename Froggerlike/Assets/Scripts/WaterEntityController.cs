@@ -8,16 +8,21 @@ public class WaterEntityController : MonoBehaviour
     //base variables
     private float moveSpeed;
     private int entityDirection;
-    private float sinkingTime = 5f;
+    private float sinkingTime = 3f;
     public bool isSunken=false;
     [SerializeField] private int entityType = 0;
     [SerializeField] private bool isSinkingType=false;
-    Rigidbody2D entityRb;
+    private Rigidbody2D entityRb;
+    private Animator entityAnimator;
 
     private void Start()
     {
         entityRb = GetComponent<Rigidbody2D>();
         SetEntityType(entityType);
+        if (isSinkingType)
+        {
+            entityAnimator = GetComponent<Animator>();
+        }
     }
     private void Update()
     {
@@ -25,6 +30,14 @@ public class WaterEntityController : MonoBehaviour
         {
             if (sinkingTime > 0f)
             {
+                if (sinkingTime < 1 || sinkingTime > 4.75f)
+                {
+                    entityAnimator.SetBool("Sinking", true);
+                }
+                else
+                {
+                    entityAnimator.SetBool("Sinking", false);
+                }
                 sinkingTime -= Time.deltaTime;
             }
             else

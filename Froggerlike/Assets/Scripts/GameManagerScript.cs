@@ -14,6 +14,7 @@ public class GameManagerScript : MonoBehaviour
     public int liveCount = 3;
     public int score = 0;
     public float difficultyFactor = 1.0f;
+    public float difficultyLevel = 1.0f;
     public float roundTime = 30f;
     public int successCount = 0;
 
@@ -44,20 +45,21 @@ public class GameManagerScript : MonoBehaviour
         score = 0;
         roundTime = 30f;
         successCount = 0;
-        difficultyFactor = 1.0f;
+        difficultyFactor = 1.0f* difficultyLevel;
         SceneManager.LoadScene("Level1");
     }
     public void MoveToLevel2()
     {
         roundTime = 30f;
         successCount = 0;
+        difficultyFactor = 1.0f* difficultyLevel;
         SceneManager.LoadScene("Level2");
     }
     public void MoveToLevel3()
     {
         roundTime = 30f;
         successCount = 0;
-        difficultyFactor = 1.5f;
+        difficultyFactor = 1.25f* difficultyLevel;
         SceneManager.LoadScene("Level3");
     }
     public void MoveToMainMenu()

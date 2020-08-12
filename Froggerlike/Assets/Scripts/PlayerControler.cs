@@ -14,6 +14,7 @@ public class PlayerControler : MonoBehaviour
     public bool isDragged = false;
     private bool isOnSinking = false;
     private bool isOnStable = false;
+    private Animator playerAnimator;
     // Water movement
     private bool inWater;
     private int onWaterEntity;
@@ -24,6 +25,7 @@ public class PlayerControler : MonoBehaviour
     
     void Start()
     {
+        playerAnimator = GetComponent<Animator>();
         startingPos = new Vector3(0.5f, -6.5f, 0f);
         startingRot = transform.rotation;
         GameManagerScript.instance.OnDeathEvent += PlayerDeath;
@@ -51,6 +53,7 @@ public class PlayerControler : MonoBehaviour
                 if (onWaterEntity == 0)
                 {
                     GameManagerScript.instance.DeathEvent(this, EventArgs.Empty);
+                    AudioManager.instance.Play("WaterSplashSFX");
                 }
                 else
                 {
@@ -60,6 +63,8 @@ public class PlayerControler : MonoBehaviour
             else if (isOnSinking && !isOnStable)
             {
                 GameManagerScript.instance.DeathEvent(this, EventArgs.Empty);
+                AudioManager.instance.Play("WaterSplashSFX");
+
             }
             else
             {
@@ -85,6 +90,8 @@ public class PlayerControler : MonoBehaviour
         isOnStable = false;
         onWaterEntity = 0;
         respawnTimerEnabled = true;
+        playerAnimator.SetBool("Moving", false);
+        playerAnimator.SetInteger("Direction", 0);
     }
 
     private void PlayerSuccess(object sender, EventArgs e)
@@ -98,6 +105,8 @@ public class PlayerControler : MonoBehaviour
         isDragged = false;
         onWaterEntity = 0;
         respawnTimerEnabled = true;
+        playerAnimator.SetBool("Moving", false);
+        playerAnimator.SetInteger("Direction", 0);
     }
 
     //small counter for respawn timer to prevent multiple deaths by chained input
@@ -134,6 +143,7 @@ public class PlayerControler : MonoBehaviour
         if (collision.gameObject.layer == 12)
         {
             GameManagerScript.instance.DeathEvent(this, EventArgs.Empty);
+            AudioManager.instance.Play("CarHitSFX");
         }
         // if on the other side trigger one success event
         if (collision.gameObject.layer == 14)
@@ -184,17 +194,37 @@ public class PlayerControler : MonoBehaviour
         //if player not respawning read input and determine direction of movement
         if (!respawnTimerEnabled)
         {
-            if (Mathf.Abs(Input.GetAxisRaw("Horizontal")) == 1f)
+            if (Mathf.Abs(Input.GetAxisRaw("Horizontal")) == 1f && Mathf.Abs(Input.GetAxisRaw("Vertical")) == 0f)
             {
                 playerRb.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * moveSpeed, 0f);
+                playerAnimator.SetBool("Moving", true);
+                playerAnimator.SetInteger("Direction", 2);
+                if (Input.GetAxisRaw("Horizontal") > 0)
+                {
+                    transform.localScale = new Vector3(-1f, 1f, 1f);
+                }
+                else
+                {
+                    transform.localScale = new Vector3(1f, 1f, 1f);
+                }
             }
-            else if (Mathf.Abs(Input.GetAxisRaw("Vertical")) == 1f)
+            else if (Mathf.Abs(Input.GetAxisRaw("Vertical")) == 1f && Mathf.Abs(Input.GetAxisRaw("Horizontal")) == 0f)
             {
                 playerRb.velocity = new Vector2(0f, Input.GetAxisRaw("Vertical") * moveSpeed);
+                playerAnimator.SetBool("Moving", true);
+                if (Input.GetAxisRaw("Vertical") > 0)
+                {
+                    playerAnimator.SetInteger("Direction", 0);
+                }
+                else
+                {
+                    playerAnimator.SetInteger("Direction", 1);
+                }
             }
             else
             {
                 playerRb.velocity = new Vector2(0f, 0f);
+                playerAnimator.SetBool("Moving", false);
             }
         }
 
