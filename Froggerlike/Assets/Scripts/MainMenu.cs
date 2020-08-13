@@ -9,6 +9,7 @@ public class MainMenu : MonoBehaviour
     private Slider sliderBGM;
     private Slider sliderSFX;
     private Slider sliderDifficulty;
+    private Slider sliderMovementStyle;
     private void Start()
     {
         sliderBGM = GameObject.Find("MusicVolumeSlider").GetComponent<Slider>();
@@ -17,6 +18,8 @@ public class MainMenu : MonoBehaviour
         sliderSFX.value = AudioManager.instance.SFXVolume;
         sliderDifficulty = GameObject.Find("DifficultySlider").GetComponent<Slider>();
         sliderDifficulty.value = (GameManagerScript.instance.difficultyLevel-0.25f)/0.25f;
+        sliderMovementStyle = GameObject.Find("MovementStyleSlider").GetComponent<Slider>();
+        sliderMovementStyle.value = GameManagerScript.instance.preciseMovement ? 1 : 0;
         GameObject.Find("OptionsMenu").SetActive(false);
     }
     public void StartGame()
@@ -38,6 +41,17 @@ public class MainMenu : MonoBehaviour
         AudioManager.instance.ChangeBGMVolume(volume);
     }
 
+    public void ChangeMovementStyle(float value)
+    {
+        if (value == 0)
+        {
+            GameManagerScript.instance.preciseMovement = false;
+        }
+        else
+        {
+            GameManagerScript.instance.preciseMovement = true;
+        }
+    }
     public void ChangeDifficultyFactor(float value)
     {
         switch (value)

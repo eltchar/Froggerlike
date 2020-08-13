@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class PlayerControler : MonoBehaviour
 {
@@ -22,7 +23,12 @@ public class PlayerControler : MonoBehaviour
     //other variables
     private bool respawnTimerEnabled = false;
     private float respawnTime = 0.5f;
-    
+
+    //test stuff
+    private float moveDistance=0f;
+    private Vector3 movePoint= new Vector3(0f,0f,0f);
+    private Vector3 prevPos;
+
     void Start()
     {
         playerAnimator = GetComponent<Animator>();
@@ -31,14 +37,25 @@ public class PlayerControler : MonoBehaviour
         GameManagerScript.instance.OnDeathEvent += PlayerDeath;
         GameManagerScript.instance.OnSuccessEvent += PlayerSuccess;
         playerRb = GetComponent<Rigidbody2D>();
+        prevPos = transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
-        HandleMovement();
         RespawnTimerCount();
+        if (GameManagerScript.instance.preciseMovement)
+        {
+            HandleMovementSmooth();
+        }
+        else
+        {
+            HandleMovementDir();
+            HandleMovement();
+        }
+        
     }
+
     private void LateUpdate()
     {
         WaterCheck();
@@ -92,6 +109,8 @@ public class PlayerControler : MonoBehaviour
         respawnTimerEnabled = true;
         playerAnimator.SetBool("Moving", false);
         playerAnimator.SetInteger("Direction", 0);
+        prevPos = transform.position;
+        moveDistance = 0f;
     }
 
     private void PlayerSuccess(object sender, EventArgs e)
@@ -107,6 +126,8 @@ public class PlayerControler : MonoBehaviour
         respawnTimerEnabled = true;
         playerAnimator.SetBool("Moving", false);
         playerAnimator.SetInteger("Direction", 0);
+        prevPos = transform.position;
+        moveDistance = 0f;
     }
 
     //small counter for respawn timer to prevent multiple deaths by chained input
@@ -134,7 +155,7 @@ public class PlayerControler : MonoBehaviour
         {
             inWater = true;
         }
-        // // if off water entity increase counter of on how many water entities currently on
+        // if off water entity increase counter of on how many water entities currently on
         if (collision.gameObject.layer == 11)
         {
             onWaterEntity += 1;
@@ -189,7 +210,7 @@ public class PlayerControler : MonoBehaviour
         }
     }
 
-    private void HandleMovement()
+    private void HandleMovementSmooth()
     {
         //if player not respawning read input and determine direction of movement
         if (!respawnTimerEnabled)
@@ -229,6 +250,65 @@ public class PlayerControler : MonoBehaviour
         }
 
     }
+
+    private void HandleMovementDir()
+    {
+        if (!respawnTimerEnabled)
+        {
+            if (moveDistance <= 0)
+            {
+                if (Input.GetAxisRaw("Horizontal") == 1f)
+                {
+                    movePoint = new Vector3(1f, 0f, 0f);
+                    moveDistance = 1f;
+                    playerAnimator.SetBool("Moving", true);
+                    playerAnimator.SetInteger("Direction", 2);
+                    transform.localScale = new Vector3(-1f, 1f, 1f);
+                }
+                else if (Input.GetAxisRaw("Horizontal") == -1f)
+                {
+                    movePoint = new Vector3(-1f, 0f, 0f);
+                    moveDistance = 1f;
+                    playerAnimator.SetBool("Moving", true);
+                    playerAnimator.SetInteger("Direction", 2);
+                    transform.localScale = new Vector3(1f, 1f, 1f);
+                }
+                else if (Input.GetAxisRaw("Vertical") == 1f)
+                {
+                    movePoint = new Vector3(0f, 1f, 0f);
+                    moveDistance = 1f;
+                    playerAnimator.SetBool("Moving", true);
+                    playerAnimator.SetInteger("Direction", 0);
+                }
+                else if (Input.GetAxisRaw("Vertical") == -1f)
+                {
+                    movePoint = new Vector3(0f, -1f, 0f);
+                    moveDistance = 1f;
+                    playerAnimator.SetBool("Moving", true);
+                    playerAnimator.SetInteger("Direction", 1);
+                }
+                else
+                {
+                    movePoint = new Vector3(0f, 0f, 0f);
+                    playerAnimator.SetBool("Moving", false);
+                }
+            }
+        }
+    }
+
+    private void HandleMovement()
+    {
+        //if player not respawning read input and determine direction of movement
+        if (!respawnTimerEnabled)
+        {
+            //moving player
+            prevPos = transform.position;
+            transform.Translate(movePoint*moveSpeed*Time.deltaTime,Space.World);
+            moveDistance -= Mathf.Abs(Vector3.Distance(prevPos, transform.position));
+        }
+
+    }
+
     private void OnDestroy()
     {
         GameManagerScript.instance.OnDeathEvent -= PlayerDeath;

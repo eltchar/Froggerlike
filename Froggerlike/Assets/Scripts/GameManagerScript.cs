@@ -17,6 +17,7 @@ public class GameManagerScript : MonoBehaviour
     public float difficultyLevel = 1.0f;
     public float roundTime = 30f;
     public int successCount = 0;
+    public bool preciseMovement = false;
 
     private void Awake()
     {
