@@ -12,6 +12,7 @@ public class MainMenu : MonoBehaviour
     private Slider sliderMovementStyle;
     private void Start()
     {
+        //finding options slider and updating them with values of the setting then hiding options menu
         sliderBGM = GameObject.Find("MusicVolumeSlider").GetComponent<Slider>();
         sliderBGM.value = AudioManager.instance.BGMVolume;
         sliderSFX = GameObject.Find("EffectsVolumeSlider").GetComponent<Slider>();

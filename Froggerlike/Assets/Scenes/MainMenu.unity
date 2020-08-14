@@ -2423,9 +2423,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Reach grass on the other side 3 times while avoiding cars and water. \nUse
-    logs and lily pads to corss water, be careful lilies may occasionally sink.\nBe
-    quick your time is limited and your score is based on it.\nUse W, S, A, D to
+  m_text: "Reach the grass on the other side 3 times while avoiding cars and water.
+    \nUse logs and lily pads to cross water, be careful lilies may occasionally sink.\nBe
+    quick, your time is limited and your score is based on it.\nUse W, S, A, D to
     move your character.\nPress ESC to pause the game."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

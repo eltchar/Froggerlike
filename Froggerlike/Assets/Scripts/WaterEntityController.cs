@@ -28,8 +28,10 @@ public class WaterEntityController : MonoBehaviour
     {
         if (isSinkingType)
         {
+            //check how much time before object sinks/resurface
             if (sinkingTime > 0f)
             {
+                // if object is about to sink or resurface play animation
                 if (sinkingTime < 1 || sinkingTime > 4.75f)
                 {
                     entityAnimator.SetBool("Sinking", true);
@@ -40,6 +42,7 @@ public class WaterEntityController : MonoBehaviour
                 }
                 sinkingTime -= Time.deltaTime;
             }
+            //if time is out sink/resurface object
             else
             {
                 if (isSunken)
@@ -57,6 +60,7 @@ public class WaterEntityController : MonoBehaviour
             }
         }
     }
+    // setting up variables depending on the type of entity sorted by what lane they start at
     public void SetEntityType(int Type)
     {
         switch (Type)
@@ -91,6 +95,7 @@ public class WaterEntityController : MonoBehaviour
         }
     }
 
+    //toggling visiblity on sinking/resurfacing
     private void SinkEntity(bool state)
     {
         if (state)
@@ -104,6 +109,7 @@ public class WaterEntityController : MonoBehaviour
         
     }
 
+    //if out of map move it on the other side to continue movement
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (entityDirection==1)

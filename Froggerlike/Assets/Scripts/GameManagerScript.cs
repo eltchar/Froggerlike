@@ -21,7 +21,7 @@ public class GameManagerScript : MonoBehaviour
 
     private void Awake()
     {
-        //Setting up singleton
+        //Setting up singleton pattern
         if (instance == null)
         {
             instance = this;

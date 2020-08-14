@@ -16,6 +16,9 @@ public class PlayerControler : MonoBehaviour
     private bool isOnSinking = false;
     private bool isOnStable = false;
     private Animator playerAnimator;
+    private float moveDistance = 0f;
+    private Vector3 movePoint = new Vector3(0f, 0f, 0f);
+    private Vector3 prevPos;
     // Water movement
     private bool inWater;
     private int onWaterEntity;
@@ -24,11 +27,7 @@ public class PlayerControler : MonoBehaviour
     private bool respawnTimerEnabled = false;
     private float respawnTime = 0.5f;
 
-    //test stuff
-    private float moveDistance=0f;
-    private Vector3 movePoint= new Vector3(0f,0f,0f);
-    private Vector3 prevPos;
-
+    //preparing events, finding objects
     void Start()
     {
         playerAnimator = GetComponent<Animator>();
@@ -40,7 +39,7 @@ public class PlayerControler : MonoBehaviour
         prevPos = transform.position;
     }
 
-    // Update is called once per frame
+    // check if player is dead, if not perform movement depending on setting
     void Update()
     {
         RespawnTimerCount();
@@ -55,7 +54,7 @@ public class PlayerControler : MonoBehaviour
         }
         
     }
-
+    //detect if player is in water and should be killed
     private void LateUpdate()
     {
         WaterCheck();
@@ -67,6 +66,7 @@ public class PlayerControler : MonoBehaviour
         {
             if (waterTime<0)
             {
+                //if on water and not on any water entity give 0.1 sec for transition between tiles if still in water kill player
                 if (onWaterEntity == 0)
                 {
                     GameManagerScript.instance.DeathEvent(this, EventArgs.Empty);
@@ -77,12 +77,14 @@ public class PlayerControler : MonoBehaviour
                     waterTime = 0.1f;
                 }
             }
+            // if player was on sinking object kill him, but only if he was not on non sinking object at the same time
             else if (isOnSinking && !isOnStable)
             {
                 GameManagerScript.instance.DeathEvent(this, EventArgs.Empty);
                 AudioManager.instance.Play("WaterSplashSFX");
 
             }
+            //count down buffer time
             else
             {
                 waterTime -= Time.deltaTime;
@@ -90,6 +92,7 @@ public class PlayerControler : MonoBehaviour
                 isOnSinking = false;
             }
         }
+        //if not in water reset buffer time
         else
         {
             waterTime = 0.1f;
@@ -112,7 +115,7 @@ public class PlayerControler : MonoBehaviour
         prevPos = transform.position;
         moveDistance = 0f;
     }
-
+    // reset player position and player oriented variables on success
     private void PlayerSuccess(object sender, EventArgs e)
     {
         playerRb.velocity = new Vector2(0f, 0f);
@@ -175,7 +178,7 @@ public class PlayerControler : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        // if off water
+        // if off water set off water check flag
         if (collision.gameObject.layer == 10)
         {
             inWater = false;
@@ -196,6 +199,7 @@ public class PlayerControler : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
+        //check on what type (stable/sinking) of entity player currently is located
         if (collision.gameObject.layer == 11)
         {
             if (collision.gameObject.GetComponent<WaterEntityController>().isSunken)
@@ -210,11 +214,13 @@ public class PlayerControler : MonoBehaviour
         }
     }
 
+    //Smooth type movement function
     private void HandleMovementSmooth()
     {
         //if player not respawning read input and determine direction of movement
         if (!respawnTimerEnabled)
         {
+            //read input and set velocity and animation based on the values
             if (Mathf.Abs(Input.GetAxisRaw("Horizontal")) == 1f && Mathf.Abs(Input.GetAxisRaw("Vertical")) == 0f)
             {
                 playerRb.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * moveSpeed, 0f);
@@ -242,6 +248,7 @@ public class PlayerControler : MonoBehaviour
                     playerAnimator.SetInteger("Direction", 1);
                 }
             }
+            //if nothing is pressed set velocity to 0 and animation to idle
             else
             {
                 playerRb.velocity = new Vector2(0f, 0f);
@@ -251,12 +258,16 @@ public class PlayerControler : MonoBehaviour
 
     }
 
+    //Jumping type movement input detection
     private void HandleMovementDir()
     {
+        //if player not respawning read input and determine direction of movement
         if (!respawnTimerEnabled)
         {
+            //if previous movement command already moved one unit, allow next command
             if (moveDistance <= 0)
             {
+                //read input and set movment vector and animation based on the values
                 if (Input.GetAxisRaw("Horizontal") == 1f)
                 {
                     movePoint = new Vector3(1f, 0f, 0f);
@@ -287,6 +298,7 @@ public class PlayerControler : MonoBehaviour
                     playerAnimator.SetBool("Moving", true);
                     playerAnimator.SetInteger("Direction", 1);
                 }
+                //if nothing is pressed set movement vector to 0 and animation to idle
                 else
                 {
                     movePoint = new Vector3(0f, 0f, 0f);
@@ -295,20 +307,20 @@ public class PlayerControler : MonoBehaviour
             }
         }
     }
-
+    //Jumping type movement movement function
     private void HandleMovement()
     {
         //if player not respawning read input and determine direction of movement
         if (!respawnTimerEnabled)
         {
-            //moving player
+            //tracking traveled distance with current direction set up and moving player
             prevPos = transform.position;
             transform.Translate(movePoint*moveSpeed*Time.deltaTime,Space.World);
             moveDistance -= Mathf.Abs(Vector3.Distance(prevPos, transform.position));
         }
 
     }
-
+    //Removing functions form event
     private void OnDestroy()
     {
         GameManagerScript.instance.OnDeathEvent -= PlayerDeath;

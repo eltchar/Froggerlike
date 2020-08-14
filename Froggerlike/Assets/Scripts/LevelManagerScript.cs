@@ -21,6 +21,7 @@ public class LevelManagerScript : MonoBehaviour
     private bool isGamePaused = false;
     private Vector3 startPos;
 
+    //finding and asigining objects and widgets on current level
     void Start()
     {
         startPos = transform.position;
@@ -49,6 +50,7 @@ public class LevelManagerScript : MonoBehaviour
     }
     void Update()
     {
+        //checking for pause menu
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isGamePaused)
@@ -62,6 +64,7 @@ public class LevelManagerScript : MonoBehaviour
         }
         if (!isGamePaused)
         {
+            //chekcing for the round timer, if time runs out kill player
             if (GameManagerScript.instance.roundTime > 0f)
             {
                 GameManagerScript.instance.roundTime -= Time.deltaTime;
@@ -78,6 +81,7 @@ public class LevelManagerScript : MonoBehaviour
 
     private void PlayerDeath(object sender, EventArgs e)
     {
+        //if player still have lives, remove one and reset timer
         if (GameManagerScript.instance.liveCount>1)
         {
             GameManagerScript.instance.liveCount -= 1;
@@ -87,6 +91,7 @@ public class LevelManagerScript : MonoBehaviour
             transform.position = startPos;
 
         }
+        //if player is out of lives show game over panel
         else
         {
             GameManagerScript.instance.liveCount -= 1;
@@ -100,6 +105,7 @@ public class LevelManagerScript : MonoBehaviour
     }
     private void PlayerSuccess(object sender, EventArgs e)
     {
+        //if player didn't have 3 success yet, add one, add score based on time and dificulty and reset timer
         if (GameManagerScript.instance.successCount < 2)
         {
             GameManagerScript.instance.successCount += 1;
@@ -110,6 +116,7 @@ public class LevelManagerScript : MonoBehaviour
             transform.position = startPos;
             AudioManager.instance.Play("SuccessSFX");
         }
+        // if player have 3 successes present victory panel
         else
         {
             GameManagerScript.instance.successCount += 1;
@@ -170,6 +177,7 @@ public class LevelManagerScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        //if player enters the lane for first time add one point and move the detector one lane up
         if (collision.gameObject.layer == 13)
         {
             transform.Translate(Vector3.up);
@@ -177,6 +185,7 @@ public class LevelManagerScript : MonoBehaviour
             UpdateScore();
         }
     }
+    //depending on life count update graphics
     private void UpdateLives()
     {
         switch (GameManagerScript.instance.liveCount)
@@ -206,6 +215,7 @@ public class LevelManagerScript : MonoBehaviour
                 break;
         }
     }
+    //depending on success count update graphics
     private void UpdateSuccess()
     {
         switch (GameManagerScript.instance.successCount)
@@ -236,6 +246,7 @@ public class LevelManagerScript : MonoBehaviour
         }
     }
 
+    // restore game and remove events
     private void OnDestroy()
     {
         Time.timeScale = 1f;

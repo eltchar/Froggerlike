@@ -7,11 +7,12 @@ public class AudioManager : MonoBehaviour
 
 	public static AudioManager instance;
 	public Sound[] sounds;
-	public float BGMVolume = 1;
-	public float SFXVolume = 1;
+	public float BGMVolume = 1f;
+	public float SFXVolume = 1f;
 
 	void Awake()
 	{
+		//singleton pattern
 		if (instance != null)
 		{
 			Destroy(gameObject);
@@ -21,7 +22,7 @@ public class AudioManager : MonoBehaviour
 			instance = this;
 			DontDestroyOnLoad(gameObject);
 		}
-
+		//setting up audio settings
 		foreach (Sound s in sounds)
 		{
 			s.source = gameObject.AddComponent<AudioSource>();
@@ -36,6 +37,8 @@ public class AudioManager : MonoBehaviour
 
 	public void Play(string sound)
 	{
+
+		//finding desired song then playing it
 		Sound s = Array.Find(sounds, item => item.name == sound);
 		if (s == null)
 		{
@@ -49,6 +52,7 @@ public class AudioManager : MonoBehaviour
 	}
 	public void Pause(string sound)
 	{
+		//finding desired song then pause it
 		Sound s = Array.Find(sounds, item => item.name == sound);
 		if (s == null)
 		{
@@ -63,6 +67,7 @@ public class AudioManager : MonoBehaviour
 
 	public void ChangeSFXVolume(float volume)
 	{
+		//changing volume of all sound files with SFX in name
 		foreach (var s in sounds)
 		{
 			if (s.name.Contains("SFX"))
@@ -76,6 +81,7 @@ public class AudioManager : MonoBehaviour
 	}
 	public void ChangeBGMVolume(float volume)
 	{
+		//changing volume of all sound files with NGM in name
 		foreach (var s in sounds)
 		{
 			if (s.name.Contains("BGM"))

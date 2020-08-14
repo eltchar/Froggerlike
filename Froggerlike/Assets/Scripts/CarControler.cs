@@ -16,6 +16,7 @@ public class CarControler : MonoBehaviour
         SetEntityType(entityType);
     }
 
+    // setting up variables depending on the type of entity sorted by what lane they start at
     public void SetEntityType(int Type)
     {
         switch (Type)
@@ -50,6 +51,7 @@ public class CarControler : MonoBehaviour
         }
     }
 
+    // if outside of map move on the other side to resume movement
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (entityDirection==1)
